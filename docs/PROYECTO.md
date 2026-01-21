@@ -4,7 +4,7 @@
 **Documento de Proyecto**  
 **Versión**: 1.0  
 **Fecha**: Enero 2026  
-**Desarrollador**: [Tu Nombre]  
+**Desarrollador**: Nicolas Calderon  
 **Destinatario**: Universidad Nacional de Quilmes
 
 ---
