@@ -657,16 +657,15 @@ Se solicita (no es obligatorio) que se mantenga la referencia al desarrollador o
 
 ### 12.1 Desarrollo
 
-**Desarrollador**: [Tu Nombre]  
-**Email**: [Tu Email]  
-**LinkedIn**: [Tu Perfil]  
-**GitHub**: github.com/[tu-usuario]/inventario-unq
+**Desarrollador**: Nicolas Calderon  
+**Email**: nicolasarielcalderon@gmail.com     
+**LinkedIn**: (https://www.linkedin.com/in/nicol%C3%A1s-calder%C3%B3n-02b9ab252) 
+**GitHub**: github.com/nicocalderon7/inventario-unq
 
 ### 12.2 Universidad
 
 **Institución**: Universidad Nacional de Quilmes  
 **Laboratorio**: Laboratorio de Informática  
-**Área**: [Área correspondiente]
 
 ### 12.3 Agradecimientos
 
