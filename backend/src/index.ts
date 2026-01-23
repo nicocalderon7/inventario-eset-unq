@@ -2,6 +2,12 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import sequelize from './config/database.js'; 
+import './models/Usuario.js';
+import './models/Categoria.js';
+import './models/Prestamo.js';
+import './models/Equipo.js';
+import './models/Mantenimiento.js';
+import categoriaRoutes from './routes/categoriaRoutes.js';
 
 dotenv.config();
 
@@ -12,14 +18,16 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Rutas
+app.use('/api/categorias', categoriaRoutes);
+
 // Función para conectar a la base de datos
 const conectarDB = async () => {
   try {
     await sequelize.authenticate();
     console.log('✅ Conexión a PostgreSQL en Railway exitosa.');
     
-    // Sincronizar modelos (esto creará las tablas más adelante)
-    // await sequelize.sync({ force: false }); 
+    await sequelize.sync({ force: false });
     
   } catch (error) {
     console.error('❌ Error al conectar a la base de datos:', error);
