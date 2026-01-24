@@ -5,38 +5,22 @@ import Equipo from '../models/Equipo.js';
 
 export const crearSolicitud = async (req: Request, res: Response) => {
   const { id_equipo } = req.body;
-
   try {
-    // Buscamos el equipo
     const equipo: any = await Equipo.findByPk(id_equipo);
-    
-    if (!equipo) {
-      return res.status(404).json({ message: 'Equipo no encontrado' });
-    }
+    if (!equipo) return res.status(404).json({ message: 'Equipo no encontrado' });
 
-    // Usamos .get() para asegurar que leemos el valor real de la base de datos
     const estadoActual = equipo.get('estado_operativo');
-
-    // Validamos disponibilidad
     if (estadoActual !== 'funcional') {
       return res.status(400).json({ 
-        message: `El equipo no está disponible para préstamo. Estado actual: ${estadoActual}` 
+        message: `El equipo no está disponible. Estado actual: ${estadoActual}` 
       });
     }
 
-    // Creamos el préstamo
     const nuevaSolicitud = await Prestamo.create(req.body);
-
-    // Actualizamos el estado del equipo a 'prestado'
     await equipo.update({ estado_operativo: 'prestado' });
 
-    res.status(201).json({
-      message: 'Préstamo creado y equipo marcado como prestado',
-      nuevaSolicitud
-    });
-
+    res.status(201).json({ message: 'Préstamo creado y equipo marcado como prestado', nuevaSolicitud });
   } catch (error: any) {
-    console.error('Error en crearSolicitud:', error);
     res.status(400).json({ message: 'Error al solicitar préstamo', error: error.message });
   }
 };
@@ -58,7 +42,7 @@ export const getPrestamos = async (req: Request, res: Response) => {
 
 export const actualizarPrestamo = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { estado } = req.body; 
+  const { estado } = req.body;
 
   try {
     const prestamo: any = await Prestamo.findByPk(Number(id));
@@ -67,22 +51,31 @@ export const actualizarPrestamo = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Préstamo no encontrado' });
     }
 
-    // Si el préstamo se marca como 'devuelto' o se carga fecha de devolución, liberamos el equipo
-    if (estado === 'devuelto' || req.body.fecha_devolucion) {
-      const equipo: any = await Equipo.findByPk(prestamo.id_equipo);
+    // Convertimos a minúsculas para evitar errores de tipeo (devuelto vs Devuelto)
+    const estadoNormalizado = estado ? estado.toLowerCase() : '';
+
+    // Si el estado es 'devuelto', buscamos el equipo y lo liberamos
+    if (estadoNormalizado === 'devuelto' || req.body.fecha_devolucion) {
+      // Usamos el id_equipo que ya tiene el registro del préstamo
+      const idEquipo = prestamo.get('id_equipo');
+      const equipo: any = await Equipo.findByPk(idEquipo);
+      
       if (equipo) {
         await equipo.update({ estado_operativo: 'funcional' });
+        console.log(`>>> Sistema: Equipo ${idEquipo} liberado con éxito.`);
+      } else {
+        console.log(`>>> Sistema: No se encontró el equipo con ID ${idEquipo}`);
       }
     }
 
     await prestamo.update(req.body);
 
     res.json({
-      message: 'Préstamo actualizado con éxito',
+      message: 'Préstamo actualizado y estado de equipo sincronizado',
       prestamo
     });
   } catch (error: any) {
-    console.error('Error al actualizar:', error);
+    console.error('Error al actualizar préstamo:', error);
     res.status(500).json({ message: 'Error al actualizar el préstamo', error: error.message });
   }
 };
