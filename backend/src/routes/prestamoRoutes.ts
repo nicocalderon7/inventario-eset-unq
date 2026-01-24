@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { crearSolicitud, getPrestamos } from '../controllers/prestamoController.js';
+import { crearSolicitud, getPrestamos, actualizarPrestamo } from '../controllers/prestamoController.js';
+import { verificarToken } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
-// Definimos los puntos de acceso (endpoints)
-router.post('/', crearSolicitud);
-router.get('/', getPrestamos);
+router.post('/', verificarToken, crearSolicitud);
+router.get('/', verificarToken, getPrestamos);
+router.put('/:id', verificarToken, actualizarPrestamo);
 
 export default router;
