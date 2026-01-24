@@ -6,50 +6,47 @@ import Usuario from '../models/Usuario.js';
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-try {
-    // 1. Buscamos al usuario solo para obtener su ID real si existe
+  try {
+    // 1. Buscamos al usuario por email
     const usuario = await Usuario.findOne({ where: { email } });
 
-    // 2. BYPASS DE EMERGENCIA
-    // Si los datos coinciden con lo que mandás de Postman, entramos directo
-    if (email === 'admin@unq.edu.ar' && password === 'unq1234') {
-      const token = jwt.sign(
-        { id: usuario?.id || 1, rol: 'admin' },
-        process.env.JWT_SECRET || 'secret_fallback',
-        { expiresIn: '8h' }
-      );
-
-      return res.json({
-        message: 'Login exitoso (Bypass activo)',
-        token,
-        usuario: {
-          nombre: usuario?.nombre || 'Admin',
-          apellido: usuario?.apellido || 'Sistema',
-          rol: 'admin'
-        }
-      });
-    }
-
-    // 3. Si no es el admin de emergencia, validamos normal (por si creás otros usuarios)
+    // 2. Si el usuario no existe, rechazamos
     if (!usuario) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
+    // 3. Comparamos la contraseña usando el hash real de la DB
     const esValida = await bcrypt.compare(password, usuario.password);
+    
     if (!esValida) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
+    // 4. Generamos el token JWT
     const token = jwt.sign(
       { id: usuario.id, rol: usuario.rol },
       process.env.JWT_SECRET || 'secret_fallback',
       { expiresIn: '8h' }
     );
 
-    res.json({ message: 'Login exitoso', token, usuario });
+    // 5. Respondemos con éxito
+    res.json({ 
+      message: 'Login exitoso', 
+      token, 
+      usuario: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        email: usuario.email,
+        rol: usuario.rol
+      }
+    });
 
   } catch (error: any) {
     console.error('ERROR EN LOGIN:', error);
-    res.status(500).json({ message: 'Error en el proceso de login', error: error.message });
+    res.status(500).json({ 
+      message: 'Error en el proceso de login', 
+      error: error.message 
+    });
   }
 };
