@@ -27,3 +27,25 @@ export const getPrestamos = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error al obtener préstamos', error });
   }
 };
+
+export const actualizarPrestamo = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const prestamo = await Prestamo.findByPk(Number(id));
+
+    if (!prestamo) {
+      return res.status(404).json({ message: 'Préstamo no encontrado' });
+    }
+
+    // Actualiza el registro con los datos enviados en el Body (estado, fechas, etc.)
+    await prestamo.update(req.body);
+
+    res.json({
+      message: 'Préstamo actualizado con éxito',
+      prestamo
+    });
+  } catch (error: any) {
+    console.error('Error al actualizar:', error);
+    res.status(500).json({ message: 'Error al actualizar el préstamo', error: error.message });
+  }
+};
