@@ -10,6 +10,7 @@ import './models/Mantenimiento.js';
 import categoriaRoutes from './routes/categoriaRoutes.js';
 import equipoRoutes from './routes/equipoRoutes.js';
 import usuarioRoutes from './routes/usuarioRoutes.js';
+import prestamoRoutes from './routes/prestamoRoutes.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/equipos', equipoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/prestamos', prestamoRoutes);
 
 // Función para conectar a la base de datos
 const conectarDB = async () => {
