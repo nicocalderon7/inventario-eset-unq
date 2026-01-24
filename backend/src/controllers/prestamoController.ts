@@ -7,24 +7,27 @@ export const crearSolicitud = async (req: Request, res: Response) => {
   const { id_equipo } = req.body;
 
   try {
-    // 1. Buscamos el equipo y casteamos a 'any' o al tipo Equipo para acceder a estado_operativo
+    // Buscamos el equipo
     const equipo: any = await Equipo.findByPk(id_equipo);
     
     if (!equipo) {
       return res.status(404).json({ message: 'Equipo no encontrado' });
     }
 
-    // 2. Validamos disponibilidad usando el nombre de columna correcto: estado_operativo
-    if (equipo.estado_operativo !== 'funcional') {
+    // Usamos .get() para asegurar que leemos el valor real de la base de datos
+    const estadoActual = equipo.get('estado_operativo');
+
+    // Validamos disponibilidad
+    if (estadoActual !== 'funcional') {
       return res.status(400).json({ 
-        message: `El equipo no está disponible para préstamo. Estado actual: ${equipo.estado_operativo}` 
+        message: `El equipo no está disponible para préstamo. Estado actual: ${estadoActual}` 
       });
     }
 
-    // 3. Creamos el préstamo
+    // Creamos el préstamo
     const nuevaSolicitud = await Prestamo.create(req.body);
 
-    // 4. ACTUALIZACIÓN AUTOMÁTICA: Pasamos el equipo a 'prestado'
+    // Actualizamos el estado del equipo a 'prestado'
     await equipo.update({ estado_operativo: 'prestado' });
 
     res.status(201).json({
@@ -55,7 +58,7 @@ export const getPrestamos = async (req: Request, res: Response) => {
 
 export const actualizarPrestamo = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { estado } = req.body; // Suponiendo que mandás el estado del préstamo
+  const { estado } = req.body; 
 
   try {
     const prestamo: any = await Prestamo.findByPk(Number(id));
@@ -64,7 +67,7 @@ export const actualizarPrestamo = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Préstamo no encontrado' });
     }
 
-    // Lógica extra: Si el préstamo se marca como 'devuelto', liberamos el equipo
+    // Si el préstamo se marca como 'devuelto' o se carga fecha de devolución, liberamos el equipo
     if (estado === 'devuelto' || req.body.fecha_devolucion) {
       const equipo: any = await Equipo.findByPk(prestamo.id_equipo);
       if (equipo) {
