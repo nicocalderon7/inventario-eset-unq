@@ -29,7 +29,9 @@ const options: swaggerJSDoc.Options = {
     },
   },
   // Dónde buscar los comentarios para armar la doc
-  apis: ['./src/routes/*.ts', './src/controllers/*.ts'], 
+  apis: ['./src/routes/*.ts', 
+  './dist/routes/*.js', 
+  './routes/*.js'], 
 };
 
 export const swaggerSpec = swaggerJSDoc(options);
