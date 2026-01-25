@@ -4,12 +4,12 @@
   "type": "module",
   "description": "",
   "main": "index.js",
- "scripts": {
-  "start": "npm run build && node dist/index.js",
-  "build": "tsc",
-  "dev": "npx nodemon --exec node --loader ts-node/esm src/index.ts",
-  "test": "jest"
-},
+  "scripts": {
+    "start": "npm run build && node dist/index.js",
+    "build": "tsc",
+    "dev": "npx nodemon --exec node --loader ts-node/esm src/index.ts",
+    "test": "jest"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,7 +20,9 @@
     "express": "^5.2.1",
     "pg": "^8.17.2",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -31,6 +33,8 @@
     "@types/node": "^25.0.10",
     "@types/sequelize": "^4.28.20",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.3",
     "npm": "^11.8.0",
