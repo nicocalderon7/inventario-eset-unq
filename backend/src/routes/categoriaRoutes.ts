@@ -5,13 +5,6 @@ const router = Router();
 
 /**
  * @swagger
- * tags:
- * name: Auth
- * description: Endpoints para autenticación y manejo de sesiones
- */
-
-/**
- * @swagger
  * /api/auth/login:
  * post:
  * summary: Iniciar sesión de usuario

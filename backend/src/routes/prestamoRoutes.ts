@@ -6,13 +6,6 @@ const router = Router();
 
 /**
  * @swagger
- * tags:
- * name: Prestamos
- * description: Gestión de préstamos y devoluciones de equipos
- */
-
-/**
- * @swagger
  * /api/prestamos:
  * post:
  * summary: Crear un nuevo préstamo

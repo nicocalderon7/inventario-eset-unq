@@ -5,13 +5,6 @@ const router = Router();
 
 /**
  * @swagger
- * tags:
- * name: Equipos
- * description: Gestión del inventario de hardware
- */
-
-/**
- * @swagger
  * /api/equipos:
  * get:
  * summary: Obtener todos los equipos

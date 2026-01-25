@@ -5,51 +5,23 @@ const router = Router();
 
 /**
  * @swagger
- * tags:
- * name: Auth
- * description: Endpoints para autenticación y manejo de sesiones
- */
-
-/**
- * @swagger
  * /api/auth/login:
  * post:
- * summary: Iniciar sesión de usuario
- * description: Envía las credenciales para obtener un token JWT que permita usar las rutas protegidas.
+ * summary: Login de usuario
  * tags: [Auth]
  * requestBody:
- * required: true
  * content:
  * application/json:
  * schema:
  * type: object
- * required:
- * - email
- * - password
  * properties:
  * email:
  * type: string
- * format: email
- * example: admin@unq.edu.ar
  * password:
  * type: string
- * format: password
- * example: "123456"
  * responses:
  * 200:
- * description: Autenticación exitosa.
- * content:
- * application/json:
- * schema:
- * type: object
- * properties:
- * token:
- * type: string
- * description: Token JWT para enviar en el header 'Authorization'
- * 401:
- * description: Credenciales incorrectas.
- * 500:
- * description: Error interno del servidor.
+ * description: Éxito
  */
 router.post('/login', login);
 
