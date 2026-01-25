@@ -7,7 +7,7 @@ const router = Router();
  * @swagger
  * /api/auth/login:
  * post:
- * summary: Login de usuario
+ * summary: Login
  * tags: [Auth]
  * requestBody:
  * content:
@@ -21,7 +21,7 @@ const router = Router();
  * type: string
  * responses:
  * 200:
- * description: Éxito
+ * description: OK
  */
 router.post('/login', login);
 

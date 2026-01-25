@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { getEquipos, createEquipo } from '../controllers/equipoController.js';
+import { verificarToken } from '../middlewares/authMiddleware.js'; // Asegúrate de importar tu middleware si el post lo requiere
 
 const router = Router();
 
@@ -8,28 +9,12 @@ const router = Router();
  * /api/equipos:
  * get:
  * summary: Obtener todos los equipos
- * description: Retorna una lista de todos los equipos registrados, incluyendo su categoría y estado operativo.
  * tags: [Equipos]
  * responses:
  * 200:
  * description: Lista de equipos obtenida correctamente.
- * content:
- * application/json:
- * schema:
- * type: array
- * items:
- * type: object
- * 500:
- * description: Error del servidor.
- */
-router.get('/', getEquipos);
-
-/**
- * @swagger
- * /api/equipos:
  * post:
  * summary: Registrar un nuevo equipo
- * description: Agrega un nuevo equipo al inventario. Requiere token de administrador.
  * tags: [Equipos]
  * security:
  * - bearerAuth: []
@@ -39,10 +24,7 @@ router.get('/', getEquipos);
  * application/json:
  * schema:
  * type: object
- * required:
- * - nombre
- * - marca
- * - id_categoria
+ * required: [nombre, marca, id_categoria]
  * properties:
  * nombre:
  * type: string
@@ -50,29 +32,19 @@ router.get('/', getEquipos);
  * marca:
  * type: string
  * example: "Dell"
- * modelo:
- * type: string
- * example: "Latitude 3420"
- * nro_serie:
- * type: string
- * example: "ABC123XYZ"
  * id_categoria:
  * type: integer
  * example: 1
- * nro_patrimonio:
+ * nro_serie:
  * type: string
- * example: "UNQ-001"
- * propietario:
- * type: string
- * example: "Departamento de Ciencia y Tecnología"
+ * example: "ABC123XYZ"
  * responses:
  * 201:
  * description: Equipo creado exitosamente.
  * 401:
- * description: No autorizado (Token faltante o inválido).
- * 400:
- * description: Datos de entrada inválidos.
+ * description: No autorizado.
  */
-router.post('/', createEquipo);
+router.get('/', getEquipos);
+router.post('/', verificarToken, createEquipo);
 
 export default router;

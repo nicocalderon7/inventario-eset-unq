@@ -6,14 +6,6 @@ const router = Router();
 /**
  * @swagger
  * /api/usuarios:
- * get:
- * summary: Listar usuarios
- * tags: [Usuarios]
- * security:
- * - bearerAuth: []
- * responses:
- * 200:
- * description: OK
  * post:
  * summary: Crear usuario
  * tags: [Usuarios]
@@ -27,11 +19,17 @@ const router = Router();
  * type: string
  * email:
  * type: string
- * password:
- * type: string
  * responses:
  * 201:
  * description: Creado
+ * get:
+ * summary: Listar usuarios
+ * tags: [Usuarios]
+ * security:
+ * - bearerAuth: []
+ * responses:
+ * 200:
+ * description: OK
  */
 router.post('/', createUsuario);
 router.get('/', getUsuarios);
