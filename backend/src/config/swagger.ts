@@ -6,18 +6,7 @@ const options: swaggerJSDoc.Options = {
     info: {
       title: 'API de Inventario ESET-UNQ',
       version: '1.0.0',
-      description: 'Documentación de la API para la gestión de inventario y préstamos',
     },
-    servers: [
-      {
-        url: 'https://inventario-eset-unq-production.up.railway.app',
-        description: 'Servidor de Producción (Railway)',
-      },
-      {
-        url: 'http://localhost:3000',
-        description: 'Servidor Local',
-      },
-    ],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -28,10 +17,9 @@ const options: swaggerJSDoc.Options = {
       },
     },
   },
-  // Dónde buscar los comentarios para armar la doc
-  apis: ['./src/routes/*.ts', 
-  './dist/routes/*.js', 
-  './routes/*.js'], 
+  // Esto busca en la carpeta donde esté el proceso ejecutándose, 
+  // sin importar si es src o dist.
+  apis: ['./src/routes/*.ts','./dist/routes/*.js'], 
 };
 
 export const swaggerSpec = swaggerJSDoc(options);
