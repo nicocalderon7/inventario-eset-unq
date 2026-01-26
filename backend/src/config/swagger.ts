@@ -144,6 +144,37 @@ const options: swaggerJSDoc.Options = {
             },
           },
         },
+        Categoria: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              description: 'ID único de la categoría',
+              example: 1,
+            },
+            nombre: {
+              type: 'string',
+              description: 'Nombre de la categoría',
+              example: 'Laptops',
+            },
+            descripcion: {
+              type: 'string',
+              description: 'Descripción de la categoría',
+              example: 'Equipos portátiles tipo laptop',
+              nullable: true,
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Fecha de creación de la categoría',
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Fecha de última actualización',
+            },
+          },
+        },
         Error: {
           type: 'object',
           properties: {
