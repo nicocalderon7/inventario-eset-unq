@@ -1,20 +1,24 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '../../components/layout/Layout';
 import { equipoService } from '../../services/equipoService';
 import { prestamoService } from '../../services/prestamoService';
+import { useAuth } from '../../context/AuthContext';
 import type { Equipo, Prestamo } from '../../types';
 import { 
   Package, 
   CheckCircle, 
   Clock, 
-  AlertCircle,
-  TrendingUp 
+  AlertTriangle,
+  ArrowRight
 } from 'lucide-react';
 
 export const Dashboard = () => {
   const [equipos, setEquipos] = useState<Equipo[]>([]);
   const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadData();
@@ -40,13 +44,12 @@ export const Dashboard = () => {
   const equiposPrestados = equipos.filter(e => e.estado === 'prestado').length;
   const equiposMantenimiento = equipos.filter(e => e.estado === 'mantenimiento').length;
   const prestamosPendientes = prestamos.filter(p => p.estado === 'pendiente').length;
-  const prestamosActivos = prestamos.filter(p => p.estado === 'entregado').length;
 
   if (loading) {
     return (
       <Layout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-xl text-gray-600">Cargando...</div>
+          <div className="animate-pulse text-lg text-gray-600">Cargando datos...</div>
         </div>
       </Layout>
     );
@@ -57,112 +60,122 @@ export const Dashboard = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">
-            Resumen del estado del inventario
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600">Resumen general del inventario</p>
         </div>
 
-        {/* Métricas principales */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Métricas Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Total Equipos */}
-          <div className="card border-l-4 border-primary-500">
+          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-gray-400">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Total Equipos
-                </p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
-                  {equipos.length}
-                </p>
+                <p className="text-sm text-gray-600 font-medium">Total Equipos</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{equipos.length}</p>
               </div>
-              <div className="bg-primary-100 p-3 rounded-full">
-                <Package className="h-8 w-8 text-primary-600" />
-              </div>
+              <Package className="h-10 w-10 text-gray-400" />
             </div>
           </div>
 
           {/* Disponibles */}
-          <div className="card border-l-4 border-green-500">
+          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Disponibles
-                </p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
-                  {equiposDisponibles}
-                </p>
+                <p className="text-sm text-gray-600 font-medium">Disponibles</p>
+                <p className="text-3xl font-bold text-green-600 mt-1">{equiposDisponibles}</p>
               </div>
-              <div className="bg-green-100 p-3 rounded-full">
-                <CheckCircle className="h-8 w-8 text-green-600" />
-              </div>
+              <CheckCircle className="h-10 w-10 text-green-500" />
             </div>
           </div>
 
           {/* Prestados */}
-          <div className="card border-l-4 border-blue-500">
+          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Prestados
-                </p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
-                  {equiposPrestados}
-                </p>
+                <p className="text-sm text-gray-600 font-medium">Prestados</p>
+                <p className="text-3xl font-bold text-blue-600 mt-1">{equiposPrestados}</p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-full">
-                <TrendingUp className="h-8 w-8 text-blue-600" />
-              </div>
+              <Clock className="h-10 w-10 text-blue-500" />
             </div>
           </div>
 
           {/* Pendientes */}
-          <div className="card border-l-4 border-yellow-500">
+          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Solicitudes Pendientes
-                </p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">
-                  {prestamosPendientes}
-                </p>
+                <p className="text-sm text-gray-600 font-medium">Solicitudes Pendientes</p>
+                <p className="text-3xl font-bold text-yellow-600 mt-1">{prestamosPendientes}</p>
               </div>
-              <div className="bg-yellow-100 p-3 rounded-full">
-                <Clock className="h-8 w-8 text-yellow-600" />
-              </div>
+              <AlertTriangle className="h-10 w-10 text-yellow-500" />
             </div>
           </div>
         </div>
 
-        {/* Alertas */}
+        {/* Alerta de mantenimiento */}
         {equiposMantenimiento > 0 && (
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-            <div className="flex items-start space-x-3">
-              <AlertCircle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="font-medium text-orange-900">
-                  Equipos en Mantenimiento
-                </h3>
-                <p className="text-sm text-orange-700 mt-1">
-                  Hay {equiposMantenimiento} equipo(s) en mantenimiento actualmente.
-                </p>
-              </div>
+          <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
+            <div className="flex items-center">
+              <AlertTriangle className="h-5 w-5 text-orange-600 mr-3" />
+              <p className="text-orange-800">
+                <span className="font-medium">{equiposMantenimiento}</span> equipo(s) en mantenimiento
+              </p>
             </div>
           </div>
         )}
 
-        {/* Tablas */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Solicitudes Pendientes */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Solicitudes Pendientes
-            </h2>
-            {prestamosPendientes === 0 ? (
-              <p className="text-gray-500 text-center py-8">
-                No hay solicitudes pendientes
-              </p>
-            ) : (
+        {/* Acciones rápidas para Admin */}
+        {isAdmin && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button
+              onClick={() => navigate('/equipos')}
+              className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left group"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Gestionar Equipos</h3>
+                  <p className="text-sm text-gray-600">Ver y administrar inventario</p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-primary-600 transition-colors" />
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate('/prestamos')}
+              className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left group"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Gestionar Préstamos</h3>
+                  <p className="text-sm text-gray-600">Aprobar y revisar solicitudes</p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-primary-600 transition-colors" />
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate('/usuarios')}
+              className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow text-left group"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Usuarios</h3>
+                  <p className="text-sm text-gray-600">Administrar usuarios del sistema</p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-primary-600 transition-colors" />
+              </div>
+            </button>
+          </div>
+        )}
+
+        {/* Solicitudes pendientes (solo tabla si hay) */}
+        {prestamosPendientes > 0 && isAdmin && (
+          <div className="bg-white rounded-lg shadow">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Solicitudes Pendientes ({prestamosPendientes})
+              </h2>
+            </div>
+            <div className="p-6">
               <div className="space-y-3">
                 {prestamos
                   .filter(p => p.estado === 'pendiente')
@@ -170,65 +183,49 @@ export const Dashboard = () => {
                   .map(prestamo => (
                     <div 
                       key={prestamo.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {prestamo.usuario?.nombre || 'Usuario desconocido'}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {prestamo.equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
-                          </p>
-                        </div>
-                        <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                          Pendiente
-                        </span>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {prestamo.usuario?.nombre || 'Usuario desconocido'}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {prestamo.equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
+                        </p>
                       </div>
+                      <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
+                        Pendiente
+                      </span>
                     </div>
                   ))}
               </div>
-            )}
+              {prestamosPendientes > 5 && (
+                <button 
+                  onClick={() => navigate('/prestamos')}
+                  className="mt-4 text-primary-600 hover:text-primary-700 text-sm font-medium"
+                >
+                  Ver todas las solicitudes →
+                </button>
+              )}
+            </div>
           </div>
+        )}
 
-          {/* Préstamos Activos */}
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Préstamos Activos
-            </h2>
-            {prestamosActivos === 0 ? (
-              <p className="text-gray-500 text-center py-8">
-                No hay préstamos activos
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {prestamos
-                  .filter(p => p.estado === 'entregado')
-                  .slice(0, 5)
-                  .map(prestamo => (
-                    <div 
-                      key={prestamo.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {prestamo.usuario?.nombre || 'Usuario desconocido'}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {prestamo.equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
-                          </p>
-                        </div>
-                        <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                          En uso
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
+        {/* Vista para Docentes */}
+        {!isAdmin && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Mis Solicitudes</h2>
+            <p className="text-gray-600 mb-4">
+              Aquí podrás ver el estado de tus solicitudes de préstamo
+            </p>
+            <button 
+              onClick={() => navigate('/mis-solicitudes')}
+              className="btn-primary"
+            >
+              Ver mis solicitudes
+            </button>
           </div>
-        </div>
+        )}
       </div>
     </Layout>
   );
