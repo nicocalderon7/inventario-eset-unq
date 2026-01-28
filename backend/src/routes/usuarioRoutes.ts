@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { createUsuario, getUsuarios } from '../controllers/usuarioController.js';
+import { createUsuario, getUsuarios, updateUsuario, deleteUsuario } from '../controllers/usuarioController.js';
+import { verificarToken } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
@@ -95,5 +96,7 @@ const router = Router();
  */
 router.post('/', createUsuario);
 router.get('/', getUsuarios);
+router.put('/:id', verificarToken, updateUsuario);    
+router.delete('/:id', verificarToken, deleteUsuario);  
 
 export default router;
