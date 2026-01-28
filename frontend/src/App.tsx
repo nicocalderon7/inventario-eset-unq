@@ -4,6 +4,7 @@ import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { Login } from './pages/auth/Login';
 import { Dashboard } from './pages/admin/Dashboard';
 import { Equipos } from './pages/admin/Equipos';
+import { Prestamos } from './pages/admin/Prestamos';
 
 function App() {
   return (
@@ -26,6 +27,15 @@ function App() {
             element={
               <ProtectedRoute requireAdmin>
                 <Equipos />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/prestamos"
+            element={
+              <ProtectedRoute requireAdmin>
+                <Prestamos />
               </ProtectedRoute>
             }
           />
