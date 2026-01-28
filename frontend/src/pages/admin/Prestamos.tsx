@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '../../components/layout/Layout';
+import { Toast } from '../../components/common/Toast';
 import { prestamoService } from '../../services/prestamoService';
 import type { Prestamo } from '../../types';
 import { 
@@ -17,6 +18,17 @@ export const Prestamos = () => {
   const [filteredPrestamos, setFilteredPrestamos] = useState<Prestamo[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterEstado, setFilterEstado] = useState<string>('todos');
+
+  // Toast state
+  const [toast, setToast] = useState<{
+    show: boolean;
+    message: string;
+    type: 'success' | 'error' | 'warning';
+  }>({
+    show: false,
+    message: '',
+    type: 'success',
+  });
 
   useEffect(() => {
     loadPrestamos();
@@ -46,24 +58,34 @@ export const Prestamos = () => {
     }
   };
 
+  const showToast = (message: string, type: 'success' | 'error' | 'warning') => {
+    setToast({ show: true, message, type });
+  };
+
   const handleAprobar = async (id: number) => {
+    if (!confirm('¿Aprobar esta solicitud de préstamo?')) return;
+    
     try {
       await prestamoService.aprobar(id);
       await loadPrestamos();
+      showToast('Préstamo aprobado exitosamente', 'success');
     } catch (error) {
       console.error('Error al aprobar préstamo:', error);
-      alert('Error al aprobar el préstamo');
+      showToast('Error al aprobar el préstamo', 'error');
     }
   };
 
   const handleRechazar = async (id: number) => {
     const motivo = prompt('Motivo del rechazo (opcional):');
+    if (motivo === null) return;
+    
     try {
       await prestamoService.rechazar(id, motivo || undefined);
       await loadPrestamos();
+      showToast('Préstamo rechazado', 'warning');
     } catch (error) {
       console.error('Error al rechazar préstamo:', error);
-      alert('Error al rechazar el préstamo');
+      showToast('Error al rechazar el préstamo', 'error');
     }
   };
 
@@ -73,9 +95,10 @@ export const Prestamos = () => {
     try {
       await prestamoService.update(id, { estado: 'entregado' });
       await loadPrestamos();
+      showToast('Entrega registrada exitosamente', 'success');
     } catch (error) {
       console.error('Error al registrar entrega:', error);
-      alert('Error al registrar la entrega');
+      showToast('Error al registrar la entrega', 'error');
     }
   };
 
@@ -85,9 +108,10 @@ export const Prestamos = () => {
     try {
       await prestamoService.update(id, { estado: 'devuelto' });
       await loadPrestamos();
+      showToast('Devolución registrada exitosamente', 'success');
     } catch (error) {
       console.error('Error al registrar devolución:', error);
-      alert('Error al registrar la devolución');
+      showToast('Error al registrar la devolución', 'error');
     }
   };
 
@@ -147,6 +171,15 @@ export const Prestamos = () => {
 
   return (
     <Layout>
+      {/* Toast notification */}
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, show: false })}
+        />
+      )}
+
       <div className="space-y-6">
         {/* Header */}
         <div>
