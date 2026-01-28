@@ -5,6 +5,8 @@ import { Login } from './pages/auth/Login';
 import { Dashboard } from './pages/admin/Dashboard';
 import { Equipos } from './pages/admin/Equipos';
 import { Prestamos } from './pages/admin/Prestamos';
+import { Usuarios } from './pages/admin/Usuarios';
+
 
 function App() {
   return (
@@ -36,6 +38,15 @@ function App() {
             element={
               <ProtectedRoute requireAdmin>
                 <Prestamos />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/usuarios"
+            element={
+              <ProtectedRoute requireAdmin>
+                <Usuarios />
               </ProtectedRoute>
             }
           />
