@@ -35,3 +35,44 @@ export const getUsuarios = async (req: Request, res: Response) => {
       res.status(500).json({ message: 'Error', error });
     }
   };
+
+export const updateUsuario = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id as string, 10);
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    // Si se envía password, hashearla
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      req.body.password = await bcrypt.hash(req.body.password, salt);
+    }
+
+    await usuario.update(req.body);
+    
+    // No devolver la contraseña
+    const { password, ...usuarioSinPassword } = usuario.toJSON();
+    res.json(usuarioSinPassword);
+  } catch (error) {
+    res.status(400).json({ error: 'Error al actualizar usuario' });
+  }
+};
+
+export const deleteUsuario = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id as string, 10);
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    await usuario.destroy();
+    res.json({ message: 'Usuario eliminado exitosamente' });
+  } catch (error) {
+    res.status(400).json({ error: 'Error al eliminar usuario' });
+  }
+};
