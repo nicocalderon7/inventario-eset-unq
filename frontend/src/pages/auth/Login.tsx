@@ -17,10 +17,16 @@ export const Login = () => {
     setError('');
     setLoading(true);
 
+    console.log('🔐 Intentando login con:', { email, password });
+
     try {
       await login(email, password);
+      console.log('✅ Login exitoso');
       navigate('/dashboard');
     } catch (err: any) {
+      console.error('❌ Error completo:', err);
+      console.error('❌ Response:', err.response?.data);
+      console.error('❌ Message:', err.message);
       setError(err.message || 'Error al iniciar sesión');
     } finally {
       setLoading(false);
@@ -33,11 +39,11 @@ export const Login = () => {
       <div className="hidden lg:flex lg:w-1/2 bg-primary-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 opacity-90"></div>
         
-        {/* Imagen de fondo - Puedes reemplazar con imagen real */}
+        {/* Imagen de fondo */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: 'url(logo-unq.jpg)', // Reemplaza con la URL de la imagen real
+            backgroundImage: 'url(/logo-unq.jpg)',
             opacity: 0.3
           }}
         ></div>
