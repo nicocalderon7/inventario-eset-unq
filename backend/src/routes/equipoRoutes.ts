@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getEquipos, createEquipo } from '../controllers/equipoController.js';
+import { getEquipos, createEquipo, updateEquipo, deleteEquipo } from '../controllers/equipoController.js';
 import { verificarToken } from '../middlewares/authMiddleware.js';
 
 const router = Router();
@@ -100,7 +100,134 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
+
+/**
+ * @swagger
+ * /api/equipos/{id}:
+ *   put:
+ *     summary: Actualizar un equipo existente
+ *     description: Modifica los datos de un equipo registrado (requiere autenticación)
+ *     tags: [Equipos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del equipo a actualizar
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 description: Nombre o modelo del equipo
+ *                 example: "Laptop Dell Latitude 5420"
+ *               categoria:
+ *                 type: string
+ *                 description: Categoría del equipo
+ *                 example: "Laptop"
+ *               estado:
+ *                 type: string
+ *                 description: Estado del equipo
+ *                 enum: [disponible, prestado, mantenimiento]
+ *                 example: "disponible"
+ *               numero_serie:
+ *                 type: string
+ *                 description: Número de serie del equipo
+ *                 example: "SN123456789"
+ *               observaciones:
+ *                 type: string
+ *                 description: Observaciones o notas adicionales
+ *                 example: "Equipo actualizado, batería reemplazada"
+ *     responses:
+ *       200:
+ *         description: Equipo actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Equipo'
+ *       400:
+ *         description: Datos inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: No autorizado - Token inválido o ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Equipo no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               error: "Equipo no encontrado"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *   delete:
+ *     summary: Eliminar un equipo
+ *     description: Elimina permanentemente un equipo del inventario (requiere autenticación)
+ *     tags: [Equipos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del equipo a eliminar
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Equipo eliminado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Equipo eliminado exitosamente"
+ *       401:
+ *         description: No autorizado - Token inválido o ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Equipo no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               error: "Equipo no encontrado"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/', getEquipos);
 router.post('/', verificarToken, createEquipo);
+router.put('/:id', verificarToken, updateEquipo);      
+router.delete('/:id', verificarToken, deleteEquipo);
 
 export default router;

@@ -22,3 +22,35 @@ export const createEquipo = async (req: Request, res: Response) => {
     res.status(400).json({ message: 'Error al crear equipo', error });
   }
 };
+
+export const updateEquipo = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id as string, 10);  // ← Conversión a número
+    const equipo = await Equipo.findByPk(id);
+
+    if (!equipo) {
+      return res.status(404).json({ error: 'Equipo no encontrado' });
+    }
+
+    await equipo.update(req.body);
+    res.json(equipo);
+  } catch (error) {
+    res.status(400).json({ error: 'Error al actualizar equipo' });
+  }
+};
+
+export const deleteEquipo = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id as string, 10);  // ← Conversión a número
+    const equipo = await Equipo.findByPk(id);
+
+    if (!equipo) {
+      return res.status(404).json({ error: 'Equipo no encontrado' });
+    }
+
+    await equipo.destroy();
+    res.json({ message: 'Equipo eliminado exitosamente' });
+  } catch (error) {
+    res.status(400).json({ error: 'Error al eliminar equipo' });
+  }
+};
