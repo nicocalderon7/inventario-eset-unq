@@ -16,8 +16,16 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // 3. Comparamos la contraseña usando el hash real de la DB
-    const esValida = await bcrypt.compare(password, usuario.password);
     
+    /* Opcional: Logs para depuración
+    console.log('EMAIL:', email);
+    console.log('PASSWORD RECIBIDO:', JSON.stringify(password));
+    console.log('HASH DB:', usuario.password);
+    */
+    const esValida = await bcrypt.compare(password, usuario.password);
+
+    console.log('COMPARE RESULT:', esValida);
+
     if (!esValida) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
