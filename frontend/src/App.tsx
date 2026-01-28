@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { Login } from './pages/auth/Login';
 import { Dashboard } from './pages/admin/Dashboard';
+import { Equipos } from './pages/admin/Equipos';
 
 function App() {
   return (
@@ -16,6 +17,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/equipos"
+            element={
+              <ProtectedRoute requireAdmin>
+                <Equipos />
               </ProtectedRoute>
             }
           />
