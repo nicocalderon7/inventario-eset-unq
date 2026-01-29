@@ -6,6 +6,8 @@ import { Dashboard } from './pages/admin/Dashboard';
 import { Equipos } from './pages/admin/Equipos';
 import { Prestamos } from './pages/admin/Prestamos';
 import { Usuarios } from './pages/admin/Usuarios';
+import { SolicitarPrestamo } from './pages/docente/SolicitarPrestamo';
+import { MisSolicitudes } from './pages/docente/MisSolicitudes';
 
 
 function App() {
@@ -50,6 +52,26 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+            {/* Rutas Docentes */}
+          <Route
+            path="/solicitar-prestamo"
+            element={
+              <ProtectedRoute>
+                <SolicitarPrestamo />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/mis-solicitudes"
+            element={
+              <ProtectedRoute>
+                <MisSolicitudes />
+              </ProtectedRoute>
+            }
+          />
+
 
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
