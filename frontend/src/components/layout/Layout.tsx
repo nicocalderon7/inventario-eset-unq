@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LogOut, User, Package } from 'lucide-react';
@@ -62,39 +62,49 @@ export const Layout = ({ children }: LayoutProps) => {
           <div className="flex space-x-8 h-12">
             <button
               onClick={() => navigate('/dashboard')}
-              className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+              className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
             >
               Dashboard
             </button>
-            {isAdmin && (
+            
+            {isAdmin ? (
+              // Menú para Administradores
               <>
                 <button
                   onClick={() => navigate('/equipos')}
-                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
                 >
                   Equipos
                 </button>
                 <button
                   onClick={() => navigate('/prestamos')}
-                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
                 >
                   Préstamos
                 </button>
                 <button
                   onClick={() => navigate('/usuarios')}
-                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
                 >
                   Usuarios
                 </button>
               </>
-            )}
-            {!isAdmin && (
-              <button
-                onClick={() => navigate('/mis-solicitudes')}
-                className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
-              >
-                Mis Solicitudes
-              </button>
+            ) : (
+              // Menú para Docentes
+              <>
+                <button
+                  onClick={() => navigate('/solicitar-prestamo')}
+                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
+                >
+                  Solicitar Préstamo
+                </button>
+                <button
+                  onClick={() => navigate('/mis-solicitudes')}
+                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
+                >
+                  Mis Solicitudes
+                </button>
+              </>
             )}
           </div>
         </div>
