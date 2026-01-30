@@ -10,7 +10,7 @@ Sistema web para la gestión de préstamos de equipamiento del Laboratorio de In
 ## 🚀 Quick Start
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/inventario-unq.git
+git clone https://github.com/nicocalderon7/inventario-eset-unq.git
 
 # Ver documentación completa
 docs/PROYECTO.md
