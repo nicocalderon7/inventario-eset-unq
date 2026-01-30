@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LogOut, User, Package } from 'lucide-react';
+import unqLogo from '../../assets/favicon-96x96.png';
 
 interface LayoutProps {
   children: ReactNode;
@@ -24,7 +25,11 @@ export const Layout = ({ children }: LayoutProps) => {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <Package className="h-8 w-8 text-primary-600" />
+              <img
+                src={unqLogo}
+                alt="Universidad Nacional de Quilmes"
+                className="h-8 w-8 object-contain"
+              />
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
                   Inventario ESET-UNQ
