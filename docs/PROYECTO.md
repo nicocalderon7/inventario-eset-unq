@@ -405,8 +405,8 @@ El sistema está desplegado en servicios gratuitos:
 - **Base de datos**: Railway PostgreSQL
 
 **URLs de acceso:**
-- Sistema: `https://inventario-unq.vercel.app` (ejemplo)
-- API: `https://inventario-unq-api.railway.app` (ejemplo)
+- Sistema: `https://inventario-eset-unq.vercel.app/login` 
+- API: `https://inventario-unq-api.railway.app` 
 
 ### 7.2 Costos
 
@@ -658,9 +658,9 @@ Se solicita (no es obligatorio) que se mantenga la referencia al desarrollador o
 ### 12.1 Desarrollo
 
 **Desarrollador**: Nicolas Calderon  
-**Email**: nicolasarielcalderon@gmail.com     
-**LinkedIn**: (https://www.linkedin.com/in/nicol%C3%A1s-calder%C3%B3n-02b9ab252) 
-**GitHub**: github.com/nicocalderon7/inventario-unq
+[![Email](https://img.shields.io/badge/Email-nicolasarielcalderon%40gmail.com-red?style=flat-square&logo=gmail&logoColor=white)](mailto:nicolasarielcalderon@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Nicolás%20Calderón-blue?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nicol%C3%A1s-calder%C3%B3n-02b9ab252)
+[![GitHub](https://img.shields.io/badge/GitHub-nicocalderon7-black?style=flat-square&logo=github&logoColor=white)](https://github.com/nicocalderon7/inventario-unq)
 
 ### 12.2 Universidad
 
