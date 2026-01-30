@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, User, Package } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import unqLogo from '../../assets/favicon-96x96.png';
 
 interface LayoutProps {
