@@ -4,6 +4,7 @@ import { Toast } from '../../components/common/Toast';
 import { equipoService } from '../../services/equipoService';
 import { prestamoService } from '../../services/prestamoService';
 import { useAuth } from '../../context/AuthContext';
+import { getErrorMessage } from '../../utils/errorMessage';
 import type { Equipo } from '../../types';
 import { 
   Package, 
@@ -46,7 +47,7 @@ export const SolicitarPrestamo = () => {
     try {
       const data = await equipoService.getAll();
       // Solo mostrar equipos disponibles
-      const disponibles = data.filter(e => e.estado === 'disponible');
+      const disponibles = data.filter(e => e.estado_operativo === 'Disponible');
       setEquipos(disponibles);
       setFilteredEquipos(disponibles);
     } catch (error) {
@@ -67,7 +68,7 @@ export const SolicitarPrestamo = () => {
     const filtered = equipos.filter(
       (equipo) =>
         equipo.nombre.toLowerCase().includes(term) ||
-        equipo.categoria?.toLowerCase().includes(term)
+        equipo.Categorium?.nombre?.toLowerCase().includes(term)
     );
     setFilteredEquipos(filtered);
   };
@@ -101,9 +102,9 @@ export const SolicitarPrestamo = () => {
       setSelectedEquipo(null);
       setObservaciones('');
       await loadEquipos(); // Recargar para actualizar disponibilidad
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al crear solicitud:', error);
-      showToast(error.response?.data?.error || 'Error al enviar la solicitud', 'error');
+      showToast(getErrorMessage(error, 'Error al enviar la solicitud'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -120,7 +121,7 @@ export const SolicitarPrestamo = () => {
   }
 
   // Agrupar por categoría
-  const categorias = [...new Set(filteredEquipos.map(e => e.categoria))].filter(Boolean);
+  const categorias = [...new Set(filteredEquipos.map(e => e.Categorium?.nombre))].filter(Boolean);
 
   return (
     <Layout>
@@ -179,7 +180,7 @@ export const SolicitarPrestamo = () => {
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredEquipos
-                      .filter(e => e.categoria === categoria)
+                      .filter(e => e.Categorium?.nombre === categoria)
                       .map(equipo => (
                         <div
                           key={equipo.id}
@@ -197,9 +198,9 @@ export const SolicitarPrestamo = () => {
                             )}
                           </div>
                           <h4 className="font-medium text-gray-900 mb-1">{equipo.nombre}</h4>
-                          {equipo.numero_serie && (
+                          {equipo.nro_serie && (
                             <p className="text-xs text-gray-500 font-mono mb-2">
-                              S/N: {equipo.numero_serie}
+                              S/N: {equipo.nro_serie}
                             </p>
                           )}
                           {equipo.observaciones && (
@@ -227,8 +228,8 @@ export const SolicitarPrestamo = () => {
               <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-1">Equipo seleccionado:</p>
                 <p className="font-medium text-gray-900">{selectedEquipo.nombre}</p>
-                {selectedEquipo.categoria && (
-                  <p className="text-sm text-gray-600">{selectedEquipo.categoria}</p>
+                {selectedEquipo.Categorium?.nombre && (
+                  <p className="text-sm text-gray-600">{selectedEquipo.Categorium.nombre}</p>
                 )}
               </div>
 
