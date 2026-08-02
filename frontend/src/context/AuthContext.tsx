@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Usuario, AuthContextType } from '../types';
 import api from '../services/api';
+import { getErrorMessage } from '../utils/errorMessage';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -31,8 +32,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       localStorage.setItem('token', newToken);
       localStorage.setItem('user', JSON.stringify(usuario));
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Error al iniciar sesión');
+    } catch (error: unknown) {
+      throw new Error(getErrorMessage(error, 'Error al iniciar sesión'));
     }
   };
 
