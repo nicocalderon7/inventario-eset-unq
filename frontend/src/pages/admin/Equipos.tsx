@@ -3,6 +3,7 @@ import { Layout } from '../../components/layout/Layout';
 import { Modal } from '../../components/common/Modal';
 import { EquipoForm } from '../../components/admin/EquipoForm';
 import { equipoService } from '../../services/equipoService';
+import { getErrorMessage } from '../../utils/errorMessage';
 import type { Equipo } from '../../types';
 import { 
   Search, 
@@ -59,8 +60,8 @@ export const Equipos = () => {
     const filtered = equipos.filter(
       (equipo) =>
         equipo.nombre.toLowerCase().includes(term) ||
-        equipo.categoria?.toLowerCase().includes(term) ||
-        equipo.numero_serie?.toLowerCase().includes(term)
+        equipo.Categorium?.nombre?.toLowerCase().includes(term) ||
+        equipo.nro_serie?.toLowerCase().includes(term)
     );
     setFilteredEquipos(filtered);
   };
@@ -103,9 +104,9 @@ export const Equipos = () => {
       await loadEquipos();
       setIsModalOpen(false);
       setSelectedEquipo(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al guardar equipo:', error);
-      setError(error.response?.data?.error || 'Error al guardar el equipo');
+      setError(getErrorMessage(error, 'Error al guardar el equipo'));
     } finally {
       setFormLoading(false);
     }
@@ -113,20 +114,23 @@ export const Equipos = () => {
 
   const getEstadoBadge = (estado: string) => {
     const badges = {
-      disponible: 'bg-green-100 text-green-800',
-      prestado: 'bg-blue-100 text-blue-800',
-      mantenimiento: 'bg-orange-100 text-orange-800',
+      Disponible: 'bg-green-100 text-green-800',
+      Solicitado: 'bg-yellow-100 text-yellow-800',
+      Prestado: 'bg-blue-100 text-blue-800',
+      Mantenimiento: 'bg-orange-100 text-orange-800',
     };
     return badges[estado as keyof typeof badges] || 'bg-gray-100 text-gray-800';
   };
 
   const getEstadoIcon = (estado: string) => {
     switch (estado) {
-      case 'disponible':
+      case 'Disponible':
         return <CheckCircle className="h-4 w-4" />;
-      case 'prestado':
+      case 'Solicitado':
         return <Clock className="h-4 w-4" />;
-      case 'mantenimiento':
+      case 'Prestado':
+        return <Clock className="h-4 w-4" />;
+      case 'Mantenimiento':
         return <Wrench className="h-4 w-4" />;
       default:
         return <Package className="h-4 w-4" />;
@@ -192,19 +196,19 @@ export const Equipos = () => {
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-600">Disponibles</p>
             <p className="text-2xl font-bold text-green-600">
-              {equipos.filter((e) => e.estado === 'disponible').length}
+              {equipos.filter((e) => e.estado_operativo === 'Disponible').length}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-600">Prestados</p>
             <p className="text-2xl font-bold text-blue-600">
-              {equipos.filter((e) => e.estado === 'prestado').length}
+              {equipos.filter((e) => e.estado_operativo === 'Prestado').length}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-600">Mantenimiento</p>
             <p className="text-2xl font-bold text-orange-600">
-              {equipos.filter((e) => e.estado === 'mantenimiento').length}
+              {equipos.filter((e) => e.estado_operativo === 'Mantenimiento').length}
             </p>
           </div>
         </div>
@@ -260,21 +264,21 @@ export const Equipos = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-900">{equipo.categoria || '-'}</span>
+                        <span className="text-sm text-gray-900">{equipo.Categorium?.nombre || '-'}</span>
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-sm text-gray-500 font-mono">
-                          {equipo.numero_serie || '-'}
+                          {equipo.nro_serie || '-'}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getEstadoBadge(
-                            equipo.estado
+                            equipo.estado_operativo
                           )}`}
                         >
-                          {getEstadoIcon(equipo.estado)}
-                          <span className="capitalize">{equipo.estado}</span>
+                          {getEstadoIcon(equipo.estado_operativo)}
+                          <span className="capitalize">{equipo.estado_operativo || '-'}</span>
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right text-sm font-medium">
