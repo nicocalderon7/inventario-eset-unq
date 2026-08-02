@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Usuario from '../models/Usuario.js';
 import bcrypt from 'bcrypt';
+import { sendError } from '../utils/errorResponse.js';
 
 export const createUsuario = async (req: Request, res: Response) => {
   try {
@@ -21,7 +22,7 @@ export const createUsuario = async (req: Request, res: Response) => {
 
     res.status(201).json({ message: "Usuario creado", id: nuevoUsuario.id });
   } catch (error) {
-    res.status(400).json({ message: 'Error al crear usuario', error });
+    return sendError(res, 400, 'Error al crear usuario', error);
   }
 };
 
@@ -32,7 +33,7 @@ export const getUsuarios = async (req: Request, res: Response) => {
       });
       res.json(usuarios);
     } catch (error) {
-      res.status(500).json({ message: 'Error', error });
+      return sendError(res, 500, 'Error al obtener usuarios', error);
     }
   };
 
@@ -57,7 +58,7 @@ export const updateUsuario = async (req: Request, res: Response) => {
     const { password, ...usuarioSinPassword } = usuario.toJSON();
     res.json(usuarioSinPassword);
   } catch (error) {
-    res.status(400).json({ error: 'Error al actualizar usuario' });
+    return sendError(res, 400, 'Error al actualizar usuario', error);
   }
 };
 
@@ -73,6 +74,6 @@ export const deleteUsuario = async (req: Request, res: Response) => {
     await usuario.destroy();
     res.json({ message: 'Usuario eliminado exitosamente' });
   } catch (error) {
-    res.status(400).json({ error: 'Error al eliminar usuario' });
+    return sendError(res, 400, 'Error al eliminar usuario', error);
   }
 };
