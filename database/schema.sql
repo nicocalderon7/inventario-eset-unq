@@ -6,7 +6,8 @@ CREATE TABLE categorias (
     tipo_uso VARCHAR(255),
     color VARCHAR(50),
     icono VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 2. Tabla de Usuarios
