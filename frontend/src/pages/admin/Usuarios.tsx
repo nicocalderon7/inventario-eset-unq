@@ -4,6 +4,7 @@ import { Modal } from '../../components/common/Modal';
 import { Toast } from '../../components/common/Toast';
 import { UsuarioForm } from '../../components/admin/UsuarioForm';
 import { usuarioService } from '../../services/usuarioService';
+import { getErrorMessage } from '../../utils/errorMessage';
 import type { Usuario } from '../../types';
 import { 
   Search, 
@@ -68,6 +69,7 @@ export const Usuarios = () => {
     const filtered = usuarios.filter(
       (usuario) =>
         usuario.nombre.toLowerCase().includes(term) ||
+        usuario.apellido.toLowerCase().includes(term) ||
         usuario.email.toLowerCase().includes(term)
     );
     setFilteredUsuarios(filtered);
@@ -115,9 +117,9 @@ export const Usuarios = () => {
       await loadUsuarios();
       setIsModalOpen(false);
       setSelectedUsuario(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al guardar usuario:', error);
-      showToast(error.response?.data?.error || 'Error al guardar el usuario', 'error');
+      showToast(getErrorMessage(error, 'Error al guardar el usuario'), 'error');
     } finally {
       setFormLoading(false);
     }
@@ -229,7 +231,7 @@ export const Usuarios = () => {
                         <div className="flex items-center">
                           <User className="h-5 w-5 text-gray-400 mr-3" />
                           <div className="text-sm font-medium text-gray-900">
-                            {usuario.nombre}
+                            {usuario.nombre} {usuario.apellido}
                           </div>
                         </div>
                       </td>
