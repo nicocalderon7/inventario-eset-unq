@@ -6,7 +6,7 @@ class Equipo extends Model {
   // Declaramos las propiedades para que TypeScript las reconozca
   public id!: number;
   public nombre!: string;
-  public estado_operativo!: string; 
+  public estado_operativo!: 'Disponible' | 'Solicitado' | 'Prestado' | 'Mantenimiento'; 
 }
 
 Equipo.init({
@@ -19,10 +19,9 @@ Equipo.init({
   marca: { type: DataTypes.STRING },
   modelo: { type: DataTypes.STRING },
   nro_serie: { type: DataTypes.STRING },
-  // Agregamos 'prestado' al ENUM para que la base de datos lo acepte
   estado_operativo: { 
-    type: DataTypes.ENUM('funcional', 'dañado', 'en_reparacion', 'prestado'), 
-    defaultValue: 'funcional' 
+    type: DataTypes.ENUM('Disponible', 'Solicitado', 'Prestado', 'Mantenimiento'),
+    defaultValue: 'Disponible' 
   },
   nro_patrimonio: { type: DataTypes.STRING },
   observaciones: { type: DataTypes.TEXT },
