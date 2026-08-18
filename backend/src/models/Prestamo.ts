@@ -11,7 +11,7 @@ class Prestamo extends Model {
   public fecha_solicitud!: Date;
   public fecha_entrega?: Date;
   public fecha_devolucion?: Date;
-  public estado!: 'pendiente' | 'entregado' | 'devuelto' | 'rechazado';
+  public estado!: 'pendiente' | 'aprobado' | 'entregado' | 'devuelto' | 'rechazado';
   public observaciones?: string;
   public motivo_rechazo?: string;
   public observaciones_devolucion?: string;
@@ -38,7 +38,7 @@ Prestamo.init({
   fecha_entrega: { type: DataTypes.DATE },
   fecha_devolucion: { type: DataTypes.DATE },
   estado: { 
-    type: DataTypes.ENUM('pendiente', 'entregado', 'devuelto', 'rechazado'), 
+    type: DataTypes.ENUM('pendiente', 'aprobado', 'entregado', 'devuelto', 'rechazado'), 
     defaultValue: 'pendiente' 
   },
   observaciones: { type: DataTypes.TEXT },

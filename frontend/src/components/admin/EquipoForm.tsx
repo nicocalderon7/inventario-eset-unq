@@ -1,5 +1,14 @@
 import { useState, FormEvent, useEffect } from 'react';
-import type { Equipo } from '../../types';
+import { categoriaService } from '../../services/categoriaService';
+import type { Categoria, Equipo } from '../../types';
+
+type EquipoFormData = {
+  nombre: string;
+  id_categoria: string;
+  estado_operativo: Equipo['estado_operativo'];
+  nro_serie: string;
+  observaciones: string;
+};
 
 interface EquipoFormProps {
   equipo?: Equipo | null;
@@ -9,29 +18,51 @@ interface EquipoFormProps {
 }
 
 export const EquipoForm = ({ equipo, onSubmit, onCancel, loading }: EquipoFormProps) => {
-  const [formData, setFormData] = useState({
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [categoriasLoading, setCategoriasLoading] = useState(true);
+  const [categoriasError, setCategoriasError] = useState('');
+  const [formData, setFormData] = useState<EquipoFormData>({
     nombre: '',
-    categoria: '',
-    estado: 'disponible' as 'disponible' | 'prestado' | 'mantenimiento',
-    numero_serie: '',
+    id_categoria: '',
+    estado_operativo: 'Disponible',
+    nro_serie: '',
     observaciones: '',
   });
+
+  useEffect(() => {
+    loadCategorias();
+  }, []);
 
   useEffect(() => {
     if (equipo) {
       setFormData({
         nombre: equipo.nombre || '',
-        categoria: equipo.categoria || '',
-        estado: equipo.estado || 'disponible',
-        numero_serie: equipo.numero_serie || '',
+        id_categoria: equipo.id_categoria?.toString() || '',
+        estado_operativo: equipo.estado_operativo || 'Disponible',
+        nro_serie: equipo.nro_serie || '',
         observaciones: equipo.observaciones || '',
       });
     }
   }, [equipo]);
 
+  const loadCategorias = async () => {
+    try {
+      const data = await categoriaService.getAll();
+      setCategorias(data);
+    } catch (error) {
+      console.error('Error al cargar categorías:', error);
+      setCategoriasError('Error al cargar las categorías');
+    } finally {
+      setCategoriasLoading(false);
+    }
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      id_categoria: formData.id_categoria ? Number(formData.id_categoria) : undefined,
+    });
   };
 
   const handleChange = (
@@ -62,31 +93,42 @@ export const EquipoForm = ({ equipo, onSubmit, onCancel, loading }: EquipoFormPr
 
       {/* Categoría */}
       <div>
-        <label htmlFor="categoria" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="id_categoria" className="block text-sm font-medium text-gray-700 mb-1">
           Categoría *
         </label>
-        <input
-          type="text"
-          id="categoria"
-          name="categoria"
-          value={formData.categoria}
+        <select
+          id="id_categoria"
+          name="id_categoria"
+          value={formData.id_categoria}
           onChange={handleChange}
           className="input"
-          placeholder="Ej: Laptops, Proyectores, etc."
           required
-        />
+          disabled={categoriasLoading}
+        >
+          <option value="">
+            {categoriasLoading ? 'Cargando categorías...' : 'Seleccionar categoría'}
+          </option>
+          {categorias.map((categoria) => (
+            <option key={categoria.id} value={categoria.id}>
+              {categoria.nombre}
+            </option>
+          ))}
+        </select>
+        {categoriasError && (
+          <p className="mt-1 text-sm text-red-600">{categoriasError}</p>
+        )}
       </div>
 
       {/* Número de Serie */}
       <div>
-        <label htmlFor="numero_serie" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="nro_serie" className="block text-sm font-medium text-gray-700 mb-1">
           Número de Serie
         </label>
         <input
           type="text"
-          id="numero_serie"
-          name="numero_serie"
-          value={formData.numero_serie}
+          id="nro_serie"
+          name="nro_serie"
+          value={formData.nro_serie}
           onChange={handleChange}
           className="input"
           placeholder="Ej: SN123456789"
@@ -95,20 +137,21 @@ export const EquipoForm = ({ equipo, onSubmit, onCancel, loading }: EquipoFormPr
 
       {/* Estado */}
       <div>
-        <label htmlFor="estado" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="estado_operativo" className="block text-sm font-medium text-gray-700 mb-1">
           Estado *
         </label>
         <select
-          id="estado"
-          name="estado"
-          value={formData.estado}
+          id="estado_operativo"
+          name="estado_operativo"
+          value={formData.estado_operativo}
           onChange={handleChange}
           className="input"
           required
         >
-          <option value="disponible">Disponible</option>
-          <option value="prestado">Prestado</option>
-          <option value="mantenimiento">Mantenimiento</option>
+          <option value="Disponible">Disponible</option>
+          <option value="Solicitado">Solicitado</option>
+          <option value="Prestado">Prestado</option>
+          <option value="Mantenimiento">Mantenimiento</option>
         </select>
       </div>
 

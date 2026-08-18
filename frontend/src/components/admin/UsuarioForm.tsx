@@ -11,6 +11,7 @@ interface UsuarioFormProps {
 export const UsuarioForm = ({ usuario, onSubmit, onCancel, loading }: UsuarioFormProps) => {
   const [formData, setFormData] = useState({
     nombre: '',
+    apellido: '',
     email: '',
     password: '',
     rol: 'usuario' as 'admin' | 'usuario',
@@ -20,6 +21,7 @@ export const UsuarioForm = ({ usuario, onSubmit, onCancel, loading }: UsuarioFor
     if (usuario) {
       setFormData({
         nombre: usuario.nombre || '',
+        apellido: usuario.apellido || '',
         email: usuario.email || '',
         password: '', // No mostramos la contraseña actual
         rol: usuario.rol || 'usuario',
@@ -51,7 +53,7 @@ export const UsuarioForm = ({ usuario, onSubmit, onCancel, loading }: UsuarioFor
       {/* Nombre */}
       <div>
         <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
-          Nombre Completo *
+          Nombre *
         </label>
         <input
           type="text"
@@ -60,7 +62,24 @@ export const UsuarioForm = ({ usuario, onSubmit, onCancel, loading }: UsuarioFor
           value={formData.nombre}
           onChange={handleChange}
           className="input"
-          placeholder="Ej: Juan Pérez"
+          placeholder="Ej: Juan"
+          required
+        />
+      </div>
+
+      {/* Apellido */}
+      <div>
+        <label htmlFor="apellido" className="block text-sm font-medium text-gray-700 mb-1">
+          Apellido *
+        </label>
+        <input
+          type="text"
+          id="apellido"
+          name="apellido"
+          value={formData.apellido}
+          onChange={handleChange}
+          className="input"
+          placeholder="Ej: Pérez"
           required
         />
       </div>

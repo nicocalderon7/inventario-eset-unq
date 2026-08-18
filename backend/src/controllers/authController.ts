@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/Usuario.js';
+import { sendError } from '../utils/errorResponse.js';
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -51,10 +52,6 @@ export const login = async (req: Request, res: Response) => {
     });
 
   } catch (error: any) {
-    console.error('ERROR EN LOGIN:', error);
-    res.status(500).json({ 
-      message: 'Error en el proceso de login', 
-      error: error.message 
-    });
+    return sendError(res, 500, 'Error en el proceso de login', error);
   }
 };

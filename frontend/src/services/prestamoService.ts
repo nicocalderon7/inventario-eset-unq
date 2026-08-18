@@ -22,15 +22,32 @@ export const prestamoService = {
     return response.data;
   },
 
-  aprobar: async (id: number): Promise<Prestamo> => {
-    const response = await api.put(`/prestamos/${id}`, { estado: 'aprobado' });
+  registrarEntrega: async (id: number): Promise<Prestamo> => {
+    const response = await api.put(`/prestamos/${id}`, { estado: 'entregado', 
+    fecha_entrega: new Date().toISOString()
+    });
     return response.data;
   },
 
-  rechazar: async (id: number, observaciones?: string): Promise<Prestamo> => {
+  registrarDevolucion: async (id: number): Promise<Prestamo> => {
+    const response = await api.put(`/prestamos/${id}`, { estado: 'devuelto', 
+    fecha_devolucion: new Date().toISOString()
+    });
+    return response.data;
+  },
+
+  aprobar: async (id: number, idResponsableEntrega: number): Promise<Prestamo> => {
+    const response = await api.put(`/prestamos/${id}`, {
+      estado: 'aprobado',
+      id_responsable_entrega: idResponsableEntrega,
+    });
+    return response.data;
+  },
+
+  rechazar: async (id: number, motivoRechazo?: string): Promise<Prestamo> => {
     const response = await api.put(`/prestamos/${id}`, { 
       estado: 'rechazado',
-      observaciones 
+      motivo_rechazo: motivoRechazo,
     });
     return response.data;
   },

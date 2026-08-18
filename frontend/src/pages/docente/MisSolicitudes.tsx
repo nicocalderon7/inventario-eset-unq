@@ -149,10 +149,10 @@ export const MisSolicitudes = () => {
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">
-                          {prestamo.equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
+                          {prestamo.Equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
                         </h3>
-                        {prestamo.equipo?.categoria && (
-                          <p className="text-sm text-gray-600">{prestamo.equipo.categoria}</p>
+                        {prestamo.Equipo?.nro_patrimonio && (
+                          <p className="text-sm text-gray-600">{prestamo.Equipo.nro_patrimonio}</p>
                         )}
                       </div>
                     </div>
@@ -166,7 +166,7 @@ export const MisSolicitudes = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center text-sm text-gray-600">
                       <Calendar className="h-4 w-4 mr-2" />
-                      <span>Solicitado: {formatDate(prestamo.fecha_prestamo)}</span>
+                      <span>Solicitado: {formatDate(prestamo.fecha_solicitud)}</span>
                     </div>
                     {prestamo.fecha_devolucion && (
                       <div className="flex items-center text-sm text-gray-600">

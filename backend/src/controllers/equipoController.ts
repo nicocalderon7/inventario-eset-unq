@@ -1,16 +1,25 @@
 import { Request, Response } from 'express';
 import Equipo from '../models/Equipo.js';
 import Categoria from '../models/Categoria.js';
+import { sendError } from '../utils/errorResponse.js';
 
 export const getEquipos = async (req: Request, res: Response) => {
   try {
-    // Esto trae los equipos Y los datos de la categoría asociada
     const equipos = await Equipo.findAll({
-      include: [{ model: Categoria }]
+      include: [
+        {
+          model: Categoria,
+        },
+      ],
     });
-    res.json(equipos);
+
+    const rows = equipos.map((equipo) =>
+      equipo.get({ plain: true })
+    );
+
+    res.json(rows);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener equipos', error });
+    return sendError(res, 500, 'Error al obtener equipos', error);
   }
 };
 
@@ -19,7 +28,7 @@ export const createEquipo = async (req: Request, res: Response) => {
     const nuevoEquipo = await Equipo.create(req.body);
     res.status(201).json(nuevoEquipo);
   } catch (error) {
-    res.status(400).json({ message: 'Error al crear equipo', error });
+    return sendError(res, 400, 'Error al crear equipo', error);
   }
 };
 
@@ -35,7 +44,7 @@ export const updateEquipo = async (req: Request, res: Response) => {
     await equipo.update(req.body);
     res.json(equipo);
   } catch (error) {
-    res.status(400).json({ error: 'Error al actualizar equipo' });
+    return sendError(res, 400, 'Error al actualizar equipo', error);
   }
 };
 
@@ -51,6 +60,6 @@ export const deleteEquipo = async (req: Request, res: Response) => {
     await equipo.destroy();
     res.json({ message: 'Equipo eliminado exitosamente' });
   } catch (error) {
-    res.status(400).json({ error: 'Error al eliminar equipo' });
+    return sendError(res, 400, 'Error al eliminar equipo', error);
   }
 };

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/layout/Layout';
 import { Toast } from '../../components/common/Toast';
 import { prestamoService } from '../../services/prestamoService';
+import { useAuth } from '../../context/AuthContext';
 import type { Prestamo } from '../../types';
 import { 
   Clock, 
@@ -18,6 +19,7 @@ export const Prestamos = () => {
   const [filteredPrestamos, setFilteredPrestamos] = useState<Prestamo[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterEstado, setFilterEstado] = useState<string>('todos');
+  const { user } = useAuth();
 
   // Toast state
   const [toast, setToast] = useState<{
@@ -64,9 +66,14 @@ export const Prestamos = () => {
 
   const handleAprobar = async (id: number) => {
     if (!confirm('¿Aprobar esta solicitud de préstamo?')) return;
+
+    if (!user) {
+      showToast('No se encontró el usuario administrador', 'error');
+      return;
+    }
     
     try {
-      await prestamoService.aprobar(id);
+      await prestamoService.aprobar(id, user.id);
       await loadPrestamos();
       showToast('Préstamo aprobado exitosamente', 'success');
     } catch (error) {
@@ -93,7 +100,7 @@ export const Prestamos = () => {
     if (!confirm('¿Confirmar entrega del equipo al usuario?')) return;
     
     try {
-      await prestamoService.update(id, { estado: 'entregado' });
+      await prestamoService.registrarEntrega(id);
       await loadPrestamos();
       showToast('Entrega registrada exitosamente', 'success');
     } catch (error) {
@@ -106,7 +113,7 @@ export const Prestamos = () => {
     if (!confirm('¿Confirmar devolución del equipo?')) return;
     
     try {
-      await prestamoService.update(id, { estado: 'devuelto' });
+      await prestamoService.registrarDevolucion(id);
       await loadPrestamos();
       showToast('Devolución registrada exitosamente', 'success');
     } catch (error) {
@@ -167,6 +174,7 @@ export const Prestamos = () => {
     aprobados: prestamos.filter(p => p.estado === 'aprobado').length,
     entregados: prestamos.filter(p => p.estado === 'entregado').length,
     devueltos: prestamos.filter(p => p.estado === 'devuelto').length,
+    rechazados: prestamos.filter(p => p.estado === 'rechazado').length,
   };
 
   return (
@@ -188,7 +196,7 @@ export const Prestamos = () => {
         </div>
 
         {/* Estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-600">Pendientes</p>
             <p className="text-2xl font-bold text-yellow-600">{stats.pendientes}</p>
@@ -204,6 +212,10 @@ export const Prestamos = () => {
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-sm text-gray-600">Devueltos</p>
             <p className="text-2xl font-bold text-gray-600">{stats.devueltos}</p>
+          </div>
+          <div className="bg-white rounded-lg shadow p-4">
+            <p className="text-sm text-gray-600">Rechazados</p>
+            <p className="text-2xl font-bold text-red-600">{stats.rechazados}</p>
           </div>
         </div>
 
@@ -264,10 +276,10 @@ export const Prestamos = () => {
                           <User className="h-5 w-5 text-gray-400 mr-3" />
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              {prestamo.usuario?.nombre || 'Usuario desconocido'}
+                              {prestamo.solicitante?.nombre || 'Usuario desconocido'}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {prestamo.usuario?.email || '-'}
+                              {prestamo.solicitante?.email || '-'}
                             </div>
                           </div>
                         </div>
@@ -276,14 +288,14 @@ export const Prestamos = () => {
                         <div className="flex items-center">
                           <Package className="h-5 w-5 text-gray-400 mr-2" />
                           <span className="text-sm text-gray-900">
-                            {prestamo.equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
+                            {prestamo.Equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center text-sm text-gray-500">
                           <Calendar className="h-4 w-4 mr-2" />
-                          {formatDate(prestamo.fecha_prestamo)}
+                          {formatDate(prestamo.fecha_solicitud)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -354,7 +366,7 @@ export const Prestamos = () => {
                 .slice(0, 3)
                 .map(p => (
                   <div key={p.id} className="text-sm text-blue-800">
-                    <span className="font-medium">{p.usuario?.nombre}:</span> {p.observaciones}
+                    <span className="font-medium">{p.solicitante?.nombre}:</span> {p.observaciones}
                   </div>
                 ))}
             </div>

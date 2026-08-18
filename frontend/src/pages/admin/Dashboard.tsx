@@ -40,9 +40,9 @@ export const Dashboard = () => {
   };
 
   // Calcular métricas
-  const equiposDisponibles = equipos.filter(e => e.estado === 'disponible').length;
-  const equiposPrestados = equipos.filter(e => e.estado === 'prestado').length;
-  const equiposMantenimiento = equipos.filter(e => e.estado === 'mantenimiento').length;
+  const equiposDisponibles = equipos.filter(e => e.estado_operativo === 'Disponible').length;
+  const equiposPrestados = equipos.filter(e => e.estado_operativo === 'Prestado').length;
+  const equiposMantenimiento = equipos.filter(e => e.estado_operativo === 'Mantenimiento').length;
   const prestamosPendientes = prestamos.filter(p => p.estado === 'pendiente').length;
 
   if (loading) {
@@ -187,10 +187,10 @@ export const Dashboard = () => {
                     >
                       <div>
                         <p className="font-medium text-gray-900">
-                          {prestamo.usuario?.nombre || 'Usuario desconocido'}
+                          {prestamo.solicitante?.nombre || 'Usuario desconocido'}
                         </p>
                         <p className="text-sm text-gray-600">
-                          {prestamo.equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
+                          {prestamo.Equipo?.nombre || `Equipo ID: ${prestamo.id_equipo}`}
                         </p>
                       </div>
                       <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">

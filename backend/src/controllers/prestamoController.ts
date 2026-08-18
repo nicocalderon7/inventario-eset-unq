@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Prestamo from '../models/Prestamo.js';
 import Usuario from '../models/Usuario.js';
 import Equipo from '../models/Equipo.js';
+import { sendError } from '../utils/errorResponse.js';
 
 export const crearSolicitud = async (req: Request, res: Response) => {
   const { id_equipo } = req.body;
@@ -10,18 +11,19 @@ export const crearSolicitud = async (req: Request, res: Response) => {
     if (!equipo) return res.status(404).json({ message: 'Equipo no encontrado' });
 
     const estadoActual = equipo.get('estado_operativo');
-    if (estadoActual !== 'funcional') {
+    
+    if (estadoActual !== 'Disponible') {
       return res.status(400).json({ 
         message: `El equipo no está disponible. Estado actual: ${estadoActual}` 
       });
     }
 
     const nuevaSolicitud = await Prestamo.create(req.body);
-    await equipo.update({ estado_operativo: 'prestado' });
+    await equipo.update({ estado_operativo: 'Solicitado' });
 
-    res.status(201).json({ message: 'Préstamo creado y equipo marcado como prestado', nuevaSolicitud });
-  } catch (error: any) {
-    res.status(400).json({ message: 'Error al solicitar préstamo', error: error.message });
+    res.status(201).json({ message: 'Préstamo creado y equipo marcado como solicitado', nuevaSolicitud });
+  } catch (error) {
+    return sendError(res, 400, 'Error al solicitar préstamo', error);
   }
 };
 
@@ -35,8 +37,8 @@ export const getPrestamos = async (req: Request, res: Response) => {
       ]
     });
     res.json(lista);
-  } catch (error: any) {
-    res.status(500).json({ message: 'Error al obtener préstamos', error: error.message });
+  } catch (error) {
+    return sendError(res, 500, 'Error al obtener préstamos', error);
   }
 };
 
@@ -55,13 +57,13 @@ export const actualizarPrestamo = async (req: Request, res: Response) => {
     const estadoNormalizado = estado ? estado.toLowerCase() : '';
 
     // Si el estado es 'devuelto', buscamos el equipo y lo liberamos
-    if (estadoNormalizado === 'devuelto' || req.body.fecha_devolucion) {
+    if (estadoNormalizado === 'devuelto' || estadoNormalizado === 'rechazado' ) {
       // Usamos el id_equipo que ya tiene el registro del préstamo
       const idEquipo = prestamo.get('id_equipo');
       const equipo: any = await Equipo.findByPk(idEquipo);
       
       if (equipo) {
-        await equipo.update({ estado_operativo: 'funcional' });
+        await equipo.update({ estado_operativo: 'Disponible' });
         console.log(`>>> Sistema: Equipo ${idEquipo} liberado con éxito.`);
       } else {
         console.log(`>>> Sistema: No se encontró el equipo con ID ${idEquipo}`);
@@ -74,8 +76,7 @@ export const actualizarPrestamo = async (req: Request, res: Response) => {
       message: 'Préstamo actualizado y estado de equipo sincronizado',
       prestamo
     });
-  } catch (error: any) {
-    console.error('Error al actualizar préstamo:', error);
-    res.status(500).json({ message: 'Error al actualizar el préstamo', error: error.message });
+  } catch (error) {
+    return sendError(res, 500, 'Error al actualizar el préstamo', error);
   }
 };
