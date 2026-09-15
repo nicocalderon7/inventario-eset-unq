@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ForeignKeyConstraintError } from 'sequelize';
 import Equipo from '../models/Equipo.js';
 import Categoria from '../models/Categoria.js';
 import { sendError } from '../utils/errorResponse.js';
@@ -60,6 +61,13 @@ export const deleteEquipo = async (req: Request, res: Response) => {
     await equipo.destroy();
     res.json({ message: 'Equipo eliminado exitosamente' });
   } catch (error) {
+    if (error instanceof ForeignKeyConstraintError) {
+      return sendError(
+        res,
+        409,
+        'No se puede eliminar este equipo porque tiene registros asociados (préstamos o mantenimientos). Se conserva para mantener el historial.'
+      );
+    }
     return sendError(res, 400, 'Error al eliminar equipo', error);
   }
 };
