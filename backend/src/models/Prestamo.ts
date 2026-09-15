@@ -4,17 +4,17 @@ import Usuario from './Usuario.js';
 import Equipo from './Equipo.js';
 
 class Prestamo extends Model {
-  public id!: number;
-  public id_usuario!: number;
-  public id_equipo!: number;
-  public id_responsable_entrega?: number; // Opcional porque al principio puede ser NULL
-  public fecha_solicitud!: Date;
-  public fecha_entrega?: Date;
-  public fecha_devolucion?: Date;
-  public estado!: 'pendiente' | 'aprobado' | 'entregado' | 'devuelto' | 'rechazado';
-  public observaciones?: string;
-  public motivo_rechazo?: string;
-  public observaciones_devolucion?: string;
+  declare id: number;
+  declare id_usuario: number;
+  declare id_equipo: number;
+  declare id_responsable_entrega?: number; // Opcional porque al principio puede ser NULL
+  declare fecha_solicitud: Date;
+  declare fecha_entrega?: Date;
+  declare fecha_devolucion?: Date;
+  declare estado: 'pendiente' | 'aprobado' | 'entregado' | 'devuelto' | 'rechazado';
+  declare observaciones?: string;
+  declare motivo_rechazo?: string;
+  declare observaciones_devolucion?: string;
 }
 
 Prestamo.init({
