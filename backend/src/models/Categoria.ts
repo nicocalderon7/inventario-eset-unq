@@ -2,16 +2,16 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database.js';
 
 class Categoria extends Model {
-  public id!: number;
-  public nombre!: string;
-  public descripcion_uso!: string;
-  public tipo_uso!: string;
-  public color!: string;
-  public icono?: string;
+  declare id: number;
+  declare nombre: string;
+  declare descripcion_uso: string;
+  declare tipo_uso: string;
+  declare color: string;
+  declare icono?: string;
   
   // Declaración explícita de los campos de tiempo del DER
-  public readonly created_at!: Date;
-  public readonly updated_at!: Date;
+  declare readonly created_at: Date;
+  declare readonly updated_at: Date;
 }
 
 Categoria.init({
