@@ -6,6 +6,7 @@ import { Dashboard } from './pages/admin/Dashboard';
 import { Equipos } from './pages/admin/Equipos';
 import { Prestamos } from './pages/admin/Prestamos';
 import { Usuarios } from './pages/admin/Usuarios';
+import { Mantenimientos } from './pages/admin/Mantenimientos';
 import { SolicitarPrestamo } from './pages/docente/SolicitarPrestamo';
 import { MisSolicitudes } from './pages/docente/MisSolicitudes';
 
@@ -15,6 +16,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path="/mantenimientos" element={<ProtectedRoute requireAdmin><Mantenimientos /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
 
           <Route
