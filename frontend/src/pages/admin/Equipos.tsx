@@ -86,7 +86,7 @@ export const Equipos = () => {
       await loadEquipos();
     } catch (error) {
       console.error('Error al eliminar equipo:', error);
-      alert('Error al eliminar el equipo');
+      alert(getErrorMessage(error, 'Error al eliminar el equipo'));
     }
   };
 
