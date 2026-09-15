@@ -7,15 +7,16 @@ class Mantenimiento extends Model {}
 Mantenimiento.init({
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   id_equipo: { 
-    type: DataTypes.INTEGER, 
+    type: DataTypes.INTEGER,
+    allowNull: false,
     references: { model: Equipo, key: 'id' } 
   },
   fecha_inicio: { type: DataTypes.DATE, allowNull: false },
   fecha_fin: { type: DataTypes.DATE },
-  repuestos: { type: DataTypes.TEXT },
-  descripcion_falla: { type: DataTypes.STRING, allowNull: false },
-  responsable: { type: DataTypes.STRING, allowNull: false },
-  estado: { type: DataTypes.ENUM('en_progreso', 'completado', 'pendiente'), allowNull: false },
+  repuestos: { type: DataTypes.STRING(255) },
+  descripcion_falla: { type: DataTypes.TEXT, allowNull: false },
+  responsable: { type: DataTypes.STRING, allowNull: true },
+  estado: { type: DataTypes.STRING(50), allowNull: false, defaultValue: 'pendiente', validate: { isIn: [['en_progreso', 'completado', 'pendiente']] } },
   observaciones: { type: DataTypes.TEXT }
 }, {
   sequelize,
