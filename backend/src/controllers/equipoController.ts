@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
+import sequelize from '../config/database.js';
 import Equipo from '../models/Equipo.js';
 import Categoria from '../models/Categoria.js';
+import Prestamo from '../models/Prestamo.js';
+import Mantenimiento from '../models/Mantenimiento.js';
 import { sendError } from '../utils/errorResponse.js';
 
 export const getEquipos = async (req: Request, res: Response) => {
@@ -51,15 +54,26 @@ export const updateEquipo = async (req: Request, res: Response) => {
 export const deleteEquipo = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id as string, 10);  // ← Conversión a número
-    const equipo = await Equipo.findByPk(id);
+    const eliminado = await sequelize.transaction(async (transaction) => {
+      const equipo = await Equipo.findByPk(id, {
+        transaction,
+        lock: transaction.LOCK.UPDATE,
+      });
 
-    if (!equipo) {
+      if (!equipo) return false;
+
+      await Prestamo.destroy({ where: { id_equipo: id }, transaction });
+      await Mantenimiento.destroy({ where: { id_equipo: id }, transaction });
+      await equipo.destroy({ transaction });
+      return true;
+    });
+
+    if (!eliminado) {
       return res.status(404).json({ error: 'Equipo no encontrado' });
     }
 
-    await equipo.destroy();
     res.json({ message: 'Equipo eliminado exitosamente' });
   } catch (error) {
-    return sendError(res, 400, 'Error al eliminar equipo', error);
+    return sendError(res, 500, 'Error al eliminar equipo', error);
   }
 };

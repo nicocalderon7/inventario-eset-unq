@@ -64,7 +64,7 @@ export const Layout = ({ children }: LayoutProps) => {
       {/* Navigation */}
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8 h-12">
+          <div className="flex space-x-8 h-12 overflow-x-auto whitespace-nowrap">
             <button
               onClick={() => navigate('/dashboard')}
               className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
@@ -92,6 +92,12 @@ export const Layout = ({ children }: LayoutProps) => {
                   className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
                 >
                   Usuarios
+                </button>
+                <button
+                  onClick={() => navigate('/mantenimientos')}
+                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors border-b-2 border-transparent hover:border-primary-600"
+                >
+                  Mantenimientos
                 </button>
               </>
             ) : (

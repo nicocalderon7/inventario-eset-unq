@@ -100,7 +100,12 @@ export const Dashboard = () => {
           </div>
 
           {/* Pendientes */}
-          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+          <button
+            type="button"
+            onClick={() => navigate('/prestamos')}
+            disabled={!isAdmin || prestamosPendientes === 0}
+            className="text-left bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500 enabled:hover:bg-yellow-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 font-medium">Solicitudes Pendientes</p>
@@ -108,19 +113,24 @@ export const Dashboard = () => {
               </div>
               <AlertTriangle className="h-10 w-10 text-yellow-500" />
             </div>
-          </div>
+          </button>
         </div>
 
         {/* Alerta de mantenimiento */}
         {equiposMantenimiento > 0 && (
-          <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
+          <button
+            type="button"
+            onClick={() => navigate('/mantenimientos')}
+            disabled={!isAdmin}
+            className="w-full text-left bg-orange-50 border-l-4 border-orange-500 p-4 rounded enabled:hover:bg-orange-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+          >
             <div className="flex items-center">
               <AlertTriangle className="h-5 w-5 text-orange-600 mr-3" />
               <p className="text-orange-800">
                 <span className="font-medium">{equiposMantenimiento}</span> equipo(s) en mantenimiento
               </p>
             </div>
-          </div>
+          </button>
         )}
 
         {/* Acciones rápidas para Admin */}
@@ -181,9 +191,11 @@ export const Dashboard = () => {
                   .filter(p => p.estado === 'pendiente')
                   .slice(0, 5)
                   .map(prestamo => (
-                    <div 
+                    <button
+                      type="button"
                       key={prestamo.id}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                      onClick={() => navigate('/prestamos')}
+                      className="w-full text-left flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
                     >
                       <div>
                         <p className="font-medium text-gray-900">
@@ -196,7 +208,7 @@ export const Dashboard = () => {
                       <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
                         Pendiente
                       </span>
-                    </div>
+                    </button>
                   ))}
               </div>
               {prestamosPendientes > 5 && (

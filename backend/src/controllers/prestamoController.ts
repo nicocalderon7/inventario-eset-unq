@@ -30,6 +30,7 @@ export const crearSolicitud = async (req: Request, res: Response) => {
 export const getPrestamos = async (req: Request, res: Response) => {
   try {
     const lista = await Prestamo.findAll({
+      order: [['id', 'DESC']],
       include: [
         { model: Usuario, as: 'solicitante', attributes: ['nombre', 'apellido', 'email'] },
         { model: Equipo, attributes: ['nombre', 'nro_patrimonio', 'estado_operativo'] },

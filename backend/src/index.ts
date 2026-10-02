@@ -18,6 +18,7 @@ import equipoRoutes from './routes/equipoRoutes.js';
 import usuarioRoutes from './routes/usuarioRoutes.js';
 import prestamoRoutes from './routes/prestamoRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import mantenimientoRoutes from './routes/mantenimientoRoutes.js';
 
 // Middleware 
 import { verificarToken } from './middlewares/authMiddleware.js';
@@ -44,6 +45,7 @@ app.use('/api/categorias', categoriaRoutes); // Los usuarios pueden ver qué tip
 app.use('/api/equipos', verificarToken, equipoRoutes);
 app.use('/api/usuarios', verificarToken, usuarioRoutes);
 app.use('/api/prestamos', verificarToken, prestamoRoutes);
+app.use('/api/mantenimientos', verificarToken, mantenimientoRoutes);
 
 // Función para conectar a la base de datos
 const conectarDB = async () => {

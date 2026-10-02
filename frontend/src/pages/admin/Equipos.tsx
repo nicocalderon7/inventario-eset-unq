@@ -79,14 +79,14 @@ export const Equipos = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('¿Estás seguro de eliminar este equipo?')) return;
+    if (!confirm('¿Estás seguro de eliminar este equipo? También se eliminarán todos sus préstamos y mantenimientos asociados.')) return;
 
     try {
       await equipoService.delete(id);
       await loadEquipos();
     } catch (error) {
       console.error('Error al eliminar equipo:', error);
-      alert('Error al eliminar el equipo');
+      alert(getErrorMessage(error, 'Error al eliminar el equipo'));
     }
   };
 

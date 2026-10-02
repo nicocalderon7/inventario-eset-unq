@@ -45,6 +45,26 @@ export interface Prestamo {
   updatedAt?: string;
 }
 
+export interface Mantenimiento {
+  id: number;
+  id_equipo: number;
+  fecha_inicio: string;
+  fecha_fin: string | null;
+  descripcion_falla: string;
+  responsable: string | null;
+  repuestos: string | null;
+  observaciones: string | null;
+  estado: 'pendiente' | 'en_progreso' | 'completado';
+  Equipo?: Equipo;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type CrearMantenimiento = Pick<Mantenimiento, 'id_equipo' | 'fecha_inicio' | 'descripcion_falla'> &
+  Partial<Pick<Mantenimiento, 'fecha_fin' | 'responsable' | 'repuestos' | 'observaciones' | 'estado'>>;
+
+export type ActualizarMantenimiento = Partial<Omit<CrearMantenimiento, 'id_equipo'>>;
+
 export interface Categoria {
   id: number;
   nombre: string;

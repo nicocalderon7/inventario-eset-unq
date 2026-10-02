@@ -4,9 +4,9 @@ import Categoria from './Categoria.js';
 
 class Equipo extends Model {
   // Declaramos las propiedades para que TypeScript las reconozca
-  public id!: number;
-  public nombre!: string;
-  public estado_operativo!: 'Disponible' | 'Solicitado' | 'Prestado' | 'Mantenimiento'; 
+  declare id: number;
+  declare nombre: string;
+  declare estado_operativo: 'Disponible' | 'Solicitado' | 'Prestado' | 'Mantenimiento';
 }
 
 Equipo.init({
